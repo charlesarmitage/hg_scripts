@@ -1,12 +1,11 @@
-# scripting mercurial merges
-
-# 1. navigate to first directory
-# 2. pull and update first directory
+# Merging between central repositories in Kiln
+# 1. pull and update destination repo
 # 3. pull from source repo
 # 4. merge
 # 5. commit with comment "Merge <source> to <destination>"
 # 6. push
-# 7. check whether to proceed to next directory
+
+#TODO: Use in chainmerge script to run through a set list of branches for merging
 
 import subprocess
 import string
@@ -57,4 +56,3 @@ if __name__ == '__main__':
 	dst = os.path.join(os.getcwd(), sys.argv[2])
 	mergebranch(src, dst)
 
-	#TODO: Use in chainmerge script to run through a set list of branches for merging
