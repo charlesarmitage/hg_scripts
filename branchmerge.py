@@ -6,6 +6,9 @@
 # 6. push
 
 #TODO: Use in chainmerge script to run through a set list of branches for merging
+#TODO: Use http://docs.python.org/2/library/argparse.html#module-argparse for arguement parsing
+#TODO: Offer quick option that does not revert and purge
+#TODO: Offer interactive option that runs hg in to check what will be merged and prompts for whether to merge
 
 import subprocess
 import string
