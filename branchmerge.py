@@ -20,8 +20,11 @@ def execute_command(cmd, target_repo):
 	p = subprocess.Popen(cmd, cwd=target_repo, shell=True)
 	p.wait()
 
+def backup(repo):
+	execute_command(['hg','diff','>','stash.patch'], repo)
+
 def revert_and_purge(repo):
-	execute_command(['hg', 'revert', '--all'], repo)
+	execute_command(['hg', 'revert', '--all', '--no-backup'], repo)
 	execute_command(['hg', 'purge', '--all'], repo)
 
 def pull_update(repo):
@@ -34,21 +37,36 @@ def merge(dest_repo):
 	execute_command(['hg', 'merge'], dest_repo)
 
 def commit(source_repo, dest_repo):
-	source_name = source_repo.split('\\')[-1]
-	dest_name = dest_repo.split('\\')[-1]
+	source_name = os.path.split(source_repo)[-1]
+	dest_name = os.path.split(dest_repo)[-1]
 	message = '-m"Merge {0} to {1}"'.format(source_name, dest_name)
 	execute_command(['hg', 'commit', message], dest_repo)
+
+def publish_out(repo):
+	execute_command(['hg','out'], repo)
 
 def push(repo):
 	execute_command(['hg', 'push'], repo)
 
+def restore(repo):
+	execute_command(['hg','import','stash.patch'], repo)
+
 def mergebranch(source_repo, dest_repo):
+	backup(dest_repo)
 	revert_and_purge(dest_repo)
 	pull_update(dest_repo)
 	pull_from_source(source_repo, dest_repo)
 	merge(dest_repo)
 	commit(source_repo, dest_repo)
-	push(dest_repo)
+	publish_out(dest_repo)
+
+	print "Press 'y' to push. Any other key to cancel."
+	is_push_requested = sys.stdin.read(1)
+
+	if(is_push_requested.lower() == 'y'):
+		push(dest_repo)
+	else:
+		restore(dest_repo)
 
 if __name__ == '__main__':
 	if(len(sys.argv) != 3):
