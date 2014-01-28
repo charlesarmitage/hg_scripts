@@ -39,8 +39,8 @@ def merge(dest_repo):
 def commit(source_repo, dest_repo):
 	source_name = os.path.split(source_repo)[-1]
 	dest_name = os.path.split(dest_repo)[-1]
-	message = '-m"Merge {0} to {1}"'.format(source_name, dest_name)
-	execute_command(['hg', 'commit', message], dest_repo)
+	message = 'Merge {0} to {1}'.format(source_name, dest_name)
+	execute_command(['hg', 'commit', '-m', message], dest_repo)
 
 def publish_out(repo):
 	execute_command(['hg','out'], repo)
@@ -49,7 +49,10 @@ def push(repo):
 	execute_command(['hg', 'push'], repo)
 
 def restore(repo):
-	execute_command(['hg','import','stash.patch'], repo)
+	execute_command(['hg', 'rollback'], repo)
+	execute_command(['hg', 'revert', '--all', '--no-backup'], repo)
+	print "You will now need to re-clone this repo as it has two heads"
+	# TODO: Clone to repo without two heads
 
 def mergebranch(source_repo, dest_repo):
 	backup(dest_repo)
