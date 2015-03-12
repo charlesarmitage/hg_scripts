@@ -39,11 +39,12 @@ def merge(dest_repo):
 def commit(source_repo, dest_repo):
 	source_name = os.path.split(source_repo)[-1]
 	dest_name = os.path.split(dest_repo)[-1]
-	message = 'Merge {0} to {1}'.format(source_name, dest_name)
+	message = 'Merge %s to %s' % (source_name, dest_name)
 	execute_command(['hg', 'commit', '-m', message], dest_repo)
 
 def publish_out(repo):
-	execute_command(['hg','out'], repo)
+	# Ignore merges with -M option
+	execute_command(['hg','out', '-M'], repo)
 
 def push(repo):
 	execute_command(['hg', 'push'], repo)
